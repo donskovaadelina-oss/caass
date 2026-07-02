@@ -294,33 +294,215 @@ h1, h2, h3, h4 {
 }
 
 /* ============================================
-   Mobile
+   Обновленная адаптация и исправление багов
    ============================================ */
 
 @media (max-width: 900px) {
   .container { padding: 0 24px; }
-  .burger { display: flex; }
 
+  /* 1. ИСПРАВЛЕНИЕ ДЛЯ КНОПОК: разрешаем перенос длинного текста */
+  .btn {
+    white-space: normal; /* Текст теперь может переноситься на новую строку */
+    text-align: center;
+    max-width: 100%;
+  }
+
+  /* 2. ИСПРАВЛЕНИЕ БУРГЕРА: абсолютное позиционирование вместо flex исключает кривизну */
+  .burger {
+    display: flex;
+    position: relative;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 2001; /* Бургер гарантированно будет выше открытого меню */
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .burger span {
+    position: absolute;
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--navy);
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease, top 0.3s ease;
+  }
+  
+  /* Точное попиксельное размещение линий (без зазоров флексбокса) */
+  .burger span:nth-child(1) { top: 8px; }
+  .burger span:nth-child(2) { top: 15px; }
+  .burger span:nth-child(3) { top: 22px; }
+  
+  /* Идеально ровный крестик (X) при активации */
+  .burger.active span:nth-child(1) {
+    top: 15px;
+    transform: rotate(45deg);
+  }
+  .burger.active span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  .burger.active span:nth-child(3) {
+    top: 15px;
+    transform: rotate(-45deg);
+  }
+
+  /* 3. ИСПРАВЛЕНИЕ МЕНЮ: изолируем слой, чтобы контент страницы не лез наверх */
   .main-nav {
     position: fixed;
     inset: 0;
     top: var(--header-height);
-    background: var(--white);
+    height: calc(100vh - var(--header-height));
+    background: var(--white) !important; /* Плотный белый фон без прозрачности */
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
     padding: 48px 24px;
-    transform: translateX(100%);
+    transform: translate3d(100%, 0, 0); /* 3D-трансформация заставляет GPU отрисовывать слой поверх всего */
     transition: transform 0.35s ease;
-    z-index: 999;
+    z-index: 2000; /* Поднимаем меню над текстом статьи */
     gap: 0;
+    backface-visibility: hidden;
   }
-  .main-nav.open { transform: translateX(0); }
-  .main-nav ul   { flex-direction: column; gap: 0; }
+  
+  .main-nav.open { 
+    transform: translate3d(0, 0, 0); 
+  }
+  
+  .main-nav ul { flex-direction: column; gap: 0; }
   .main-nav ul li { border-bottom: 1px solid var(--border-soft); }
-  .main-nav a    { display: block; padding: 20px 4px; font-size: 1rem; }
+  .main-nav a { display: block; padding: 20px 4px; font-size: 1rem; }
   .main-nav a::after { display: none; }
   .nav-cta { margin-top: 36px; }
 
   .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+}
+
+/* Дополнительная полировка для экранов смартфонов (меньше 600px) */
+@media (max-width: 600px) {
+  /* Кнопка регистрации в секции Lecture Hall */
+  .lh-cta .btn {
+    width: 100%; /* Растягиваем кнопку на всю ширину экрана смартфона */
+    font-size: 0.8rem;
+    padding: 16px 20px;
+    line-height: 1.4;
+  }
+}
+
+/* ============================================
+   Адаптация для мобильных телефонов (max-width: 600px)
+   ============================================ */
+
+@media (max-width: 600px) {
+  /* --- Глобальные стили и сетка --- */
+  .container { 
+    padding: 0 16px; 
+  }
+  
+  .section-heading {
+    margin-bottom: 40px;
+  }
+
+  /* --- Кнопки --- */
+  .hero-actions { 
+    flex-direction: column; 
+    gap: 16px; 
+    width: 100%; 
+    padding: 0 16px;
+  }
+  
+  .hero-actions .btn { 
+    width: 100%; 
+    text-align: center; 
+  }
+
+  /* --- Главная страница (Home) --- */
+  .hero-inner {
+    padding: 60px 0 80px;
+  }
+  
+  .stat-number { 
+    font-size: 2.5rem; /* Уменьшаем крупные цифры в статистике */
+  }
+  
+  .affiliation-card { 
+    padding: 24px 16px; 
+    width: 100%; 
+  }
+  
+  .news-card-body { 
+    padding: 20px; 
+  }
+
+  /* --- Публикации (Publications) --- */
+  .pub-hero {
+    padding: 40px 0 32px;
+  }
+
+  .article-header {
+    padding: 32px 0 24px;
+  }
+
+  .article-meta { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 8px; 
+  }
+  
+  .meta-dot {
+    display: none; /* Прячем разделители, так как элементы идут в колонку */
+  }
+
+  .article-body { 
+    font-size: 1rem; 
+    line-height: 1.7; 
+  }
+
+  .article-credits { 
+    flex-direction: column; 
+    gap: 16px; 
+    align-items: flex-start; 
+  }
+
+  .article-img-row {
+    margin: 32px auto;
+  }
+
+  /* --- Лекторий (Lecture Hall) --- */
+  .lh-hero h1 {
+    font-size: 2rem;
+  }
+
+  .lh-cta {
+    padding: 48px 0;
+  }
+
+  /* --- Подвал (Footer) --- */
+  .footer-grid { 
+    text-align: center; 
+    gap: 32px; 
+  }
+  
+  .footer-col { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+  }
+}
+
+/* ============================================
+   Адаптация для очень маленьких экранов (max-width: 400px)
+   ============================================ */
+
+@media (max-width: 400px) {
+  .logo-link img.logo-img { 
+    height: 38px; /* Немного уменьшаем логотип в шапке */
+  }
+  
+  .stat-item {
+    padding: 24px 0;
+  }
 }
