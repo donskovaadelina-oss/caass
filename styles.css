@@ -76,21 +76,41 @@ h1, h2, h3, h4 {
    Header
    ============================================ */
 
+/* 1. Исправление позиционирования шапки */
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 1000;
+  left: 0;
+  width: 100%; /* Вместо правого отступа гарантируем растяжение */
+  right: 0;
   height: var(--header-height);
-  background: rgba(255,255,255,0.97);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-soft);
+  z-index: 1000;
+  /* Убираем любые деформации при исчезновении скроллбара */
+  box-sizing: border-box; 
 }
 
+/* 2. Коррекция контейнера внутри шапки */
 .site-header .container {
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  max-width: 1200px; /* Ваше стандартное ограничение */
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  /* 3. Гарантируем, что при открытии меню body не ломает fixed-элементы */
+  body.menu-open {
+    overflow: hidden;
+    /* Резервируем место под скроллбар, чтобы предотвратить прыжок вправо */
+    padding-right: var(--scrollbar-width, 0px); 
+  }
 }
 
 .logo-link { display: flex; align-items: center; }
